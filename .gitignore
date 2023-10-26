@@ -1,3 +1,4 @@
 .vscode
 *.pdf
 *.wav
+!grafic1.pdf
