@@ -21,7 +21,8 @@ noise = np.random.normal(0, 1, len(t))
 
 # Calcularea parametrului γ pentru fiecare SNR
 SNR_values = [0.1, 1, 10, 100]
-gamma_values = [A / np.sqrt(2 * SNR) for SNR in SNR_values]
+gamma_values = [np.sqrt(np.linalg.norm(signal)**2 /
+                        (SNR * np.linalg.norm(noise)**2)) for SNR in SNR_values]
 
 plt.figure(figsize=(10, 6))
 
