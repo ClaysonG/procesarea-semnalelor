@@ -1,6 +1,7 @@
 .vscode
 *.pdf
 *.wav
+*.ipynb
 !grafic1.pdf
 !grafic2.1.pdf
 !grafic2.2.pdf
