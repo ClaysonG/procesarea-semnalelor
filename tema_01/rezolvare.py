@@ -75,12 +75,17 @@ def compress_jpeg(image: np.ndarray, Q_matrix: np.ndarray) -> np.ndarray:
     rows, cols = image.shape[:2]
 
     jpeg_img = np.zeros_like(image)
+    # Iterate over image blocks
     for i in range(0, rows, block_size):
         for j in range(0, cols, block_size):
-            block = image[i: i+block_size, j: j+block_size]
+            # Extract block from image
+            block = image[i: i + block_size, j: j + block_size]
+            # Apply DCT to block
             dct_block = dctn(block)
+            # Quantize DCT coefficients
             quantized_block = Q_matrix * np.round(dct_block / Q_matrix)
-            jpeg_img[i: i+block_size, j: j +
+            # Apply inverse DCT to quantized block
+            jpeg_img[i: i + block_size, j: j +
                      block_size] = idctn(quantized_block)
 
     return jpeg_img
@@ -105,16 +110,24 @@ def compress_ycbcr(image: np.ndarray, Q: np.ndarray) -> np.ndarray:
 
     # Convert RGB image to YCbCr color space
     image = rgb2ycbcr(image)
+    # Initialize compressed image
     compressed_img = np.zeros_like(image)
 
+    # Iterate over channels
     for channel in range(3):
+        # Extract channel from image
         rows, cols = image[:, :, channel].shape
+        # Iterate over image blocks
         for i in range(0, rows, block_size):
             for j in range(0, cols, block_size):
-                block = image[i: i+block_size, j: j+block_size, channel]
+                # Extract block from image
+                block = image[i: i + block_size, j: j + block_size, channel]
+                # Apply DCT to block
                 dct_block = dctn(block)
+                # Quantize DCT coefficients
                 quantized_block = Q * np.round(dct_block / Q)
-                compressed_img[i: i+block_size, j: j +
+                # Apply inverse DCT to quantized block
+                compressed_img[i: i + block_size, j: j +
                                block_size, channel] = idctn(quantized_block)
 
     return compressed_img
@@ -190,13 +203,15 @@ def sarcina_3():
 
     #  Compress image until MSE is below target
     while mse < target_mse:  # type: ignore
+        # Scale quantization matrix
         Q_scaled = Q_jpeg * scale
+        # Compress image
         compressed_ycbcr = compress_ycbcr(image_rgb, Q_scaled)
-
+        # Compute MSE
         mse = mean_squared_error(img_as_float(
             image_rgb.flatten()), ycbcr2rgb(compressed_ycbcr).flatten())
         print(f"MSE: {mse}")
-
+        # Increase scale
         scale += 50
 
     # Display original and compressed images
