@@ -2,53 +2,62 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def fereastra_dreptunghiulara(N: int):
+def rectangular_window(N):
     return np.ones(N)
 
 
-def fereastra_hanning(N: int):
+def hanning_window(N):
     return 0.5 - 0.5 * np.cos(2 * np.pi * np.arange(N) / (N - 1))
 
 
-def sinusoida(A: float, f: float, t: int):
+def sinusoid(A, f, t):
     return A * np.sin(2 * np.pi * f * t)
 
 
-f = 100
-fs = 1000
-N = 200
-t = np.arange(N) / fs
-print(np.arange(10) / fs)
-semnal = sinusoida(1, f, t)  # type: ignore
+def main():
+    f = 100
+    fs = 1000
+    N = 200
+    t = np.arange(N) / fs
 
-semnal_dreptunghiular = semnal * fereastra_dreptunghiulara(N)
-semnal_hanning = semnal * fereastra_hanning(N)
+    # Generate the original sinusoidal signal
+    original_signal = sinusoid(1, f, t)
 
-fig, axs = plt.subplots(3, 1, figsize=(10, 7))
-axs[0].plot(semnal)
-axs[0].set_title('Semnalul original')
+    # Apply rectangular window to the signal
+    rectangular_window_signal = original_signal * rectangular_window(N)
 
-axs[1].plot(semnal_dreptunghiular, color='green')
-axs[1].set_title('Semnalul cu fereastra dreptunghiulara')
+    # Apply Hanning window to the signal
+    hanning_window_signal = original_signal * hanning_window(N)
 
-axs[2].plot(semnal_hanning, color='orange')
-axs[2].set_title('Semnalul cu fereastra hanning')
+    # Plotting signals
+    fig, axs = plt.subplots(3, 1, figsize=(10, 7))
+    axs[0].plot(original_signal)
+    axs[0].set_title('Semnalul original')
 
-for ax in axs:
-    ax.grid(True)
+    axs[1].plot(rectangular_window_signal, color='green')
+    axs[1].set_title('Semnalul cu fereastra dreptunghiulara')
 
-plt.tight_layout()
+    axs[2].plot(hanning_window_signal, color='red')
+    axs[2].set_title('Semnalul cu fereastra Hanning')
 
-plt.show()
+    for ax in axs:
+        ax.grid(True)
 
-plt.figure(figsize=(10, 6))
+    plt.tight_layout()
+    plt.show()
 
-plt.plot(t, semnal_dreptunghiular,
-         label='Sinusoida cu fereastra dreptunghiulara', color='green')
-plt.plot(t, semnal_hanning, label='Sinusoida cu fereastra Hanning', color='orange')
-plt.title('Comparare ferestre')
-plt.legend()
+    # Comparison of windows
 
-plt.tight_layout()
+    plt.plot(t, rectangular_window_signal,
+             label='Sinusoida cu fereastra dreptunghiulara', color='green')
+    plt.plot(t, hanning_window_signal,
+             label='Sinusoida cu fereastra Hanning', color='red')
+    plt.title('Comparare ferestre')
+    plt.legend()
 
-plt.show()
+    plt.tight_layout()
+    plt.show()
+
+
+if __name__ == "__main__":
+    main()

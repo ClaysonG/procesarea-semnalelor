@@ -36,4 +36,4 @@ for ax in axs.flat:
 plt.tight_layout()
 plt.show()
 
-# Observatie: cu fiecare iteratie apare o gaussiana din ce in ce mai perfecta
+# Observatie: cu fiecare iteratie apare o gaussiana din ce in ce mai "perfecta"

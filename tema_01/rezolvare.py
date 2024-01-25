@@ -115,7 +115,7 @@ def compress_ycbcr(image: np.ndarray, Q: np.ndarray) -> np.ndarray:
 
     # Iterate over channels
     for channel in range(3):
-        # Extract channel from image
+        # Extract the dimensions
         rows, cols = image[:, :, channel].shape
         # Iterate over image blocks
         for i in range(0, rows, block_size):

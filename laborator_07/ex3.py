@@ -1,32 +1,50 @@
-# Exercitiul 3
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import misc
 from scipy.ndimage import gaussian_filter
 
-X = misc.face(gray=True)
 
-pixel_noise = 200
-noise = np.random.randint(-pixel_noise, high=pixel_noise+1, size=X.shape)
+def add_pixel_noise(image, pixel_noise):
+    noise = np.random.randint(-pixel_noise,
+                              high=pixel_noise+1, size=image.shape)
+    return image + noise
 
-X = misc.face(gray=True)
-X_noisy = X + noise
-X_denoised = gaussian_filter(X_noisy, sigma=1)
 
-print(f"SNR inainte de filtrare: {np.sum(X**2) / np.sum((X - X_noisy)**2)}")
+def main():
+    # Load the original image
+    original_image = misc.face(gray=True)
 
-fig, axs = plt.subplots(1, 3, figsize=(12, 6))
-axs[0].imshow(X, cmap=plt.cm.gray)
-axs[0].set_title("Imaginea originala")
+    # Set pixel noise level
+    pixel_noise = 300
 
-axs[1].imshow(X_noisy, cmap=plt.cm.gray)
-axs[1].set_title("Imaginea cu zgomot")
+    # Add pixel noise to the original image
+    noisy_image = add_pixel_noise(original_image, pixel_noise)
 
-axs[2].imshow(X_denoised, cmap=plt.cm.gray)
-axs[2].set_title("Imaginea fara zgomot")
+    # Denoise the noisy image using Gaussian filter
+    denoised_image = gaussian_filter(noisy_image, sigma=1)
 
-plt.tight_layout()
+    # Print SNR before and after denoising
+    snr_before = np.sum(original_image**2) / \
+        np.sum((original_image - noisy_image)**2)
+    snr_after = np.sum(original_image**2) / \
+        np.sum((original_image - denoised_image)**2)  # type: ignore
+    print(f"SNR before denoising: {snr_before}")
+    print(f"SNR after denoising: {snr_after}")
 
-plt.show()
+    # Plotting
+    fig, axs = plt.subplots(1, 3, figsize=(10, 6))
+    axs[0].imshow(original_image, cmap=plt.cm.gray)  # type: ignore
+    axs[0].set_title("Original Image")
 
-print(f"SNR dupa filtrare: {np.sum(X**2) / np.sum((X - X_denoised)**2)}")
+    axs[1].imshow(noisy_image, cmap=plt.cm.gray)  # type: ignore
+    axs[1].set_title("Noisy Image")
+
+    axs[2].imshow(denoised_image, cmap=plt.cm.gray)  # type: ignore
+    axs[2].set_title("Denoised Image")
+
+    plt.tight_layout()
+    plt.show()
+
+
+if __name__ == "__main__":
+    main()
